@@ -15,14 +15,14 @@ export function Chat({
   chatBotId,
   chatBotkey,
   name = "XCopilot",
-  logo = <Icons.logo className="w-5 h-5" />,
+  logo = <Icons.logoDark className="w-5 h-5" />,
 }: {
   chatBotId: string;
   chatBotkey: string;
   name: string;
   logo?: React.ReactNode;
 }) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   const [messages, setMessages] = React.useState<any>([]);
   const [input, setInput] = React.useState("");
@@ -31,11 +31,14 @@ export function Chat({
   const inputLength = input.trim().length;
 
   async function getChat(chatbotId: string, chatBotKey: string) {
-    const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}`, {
-      headers: {
-        Authorization: `Bearer ${chatBotKey}`,
-      },
-    });
+    const res = await axios.get(
+      `https://chat.xcopilot.co/chatbot/${chatbotId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${chatBotKey}`,
+        },
+      }
+    );
     setMessages(res?.data);
   }
 
@@ -45,8 +48,9 @@ export function Chat({
     message: string
   ) {
     setLoading(true);
+    console.log(import.meta.env.XCOPILOT_CHAT_BASE_URL);
     const res = await axios.post(
-      `http://localhost:5000/chatbot/${chatbotId}`,
+      `https://chat.xcopilot.co/chatbot/${chatbotId}`,
       {
         prompt: message,
         headers: {

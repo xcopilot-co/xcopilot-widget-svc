@@ -11,7 +11,7 @@ export default defineConfig({
       output: {
         name: "copilot-widget",
         dir: "dist-embed",
-        entryFileNames: "pilot.js",
+        entryFileNames: "xcopilot.js",
       },
     },
   },
