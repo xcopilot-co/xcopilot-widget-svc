@@ -9,10 +9,25 @@ declare global {
   }
 }
 
-function initXCopilot() {
+function initXCopilot({
+  chatBotId,
+  chatBotkey,
+  name = "XCopilot",
+  logo,
+}: {
+  chatBotId: string;
+  chatBotkey: string;
+  name: string;
+  logo?: React.ReactNode;
+}) {
   ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-      <XCopilot />
+      <XCopilot
+        chatBotId={chatBotId}
+        chatBotkey={chatBotkey}
+        name={name}
+        logo={logo}
+      />
       <style>{css}</style>
     </React.StrictMode>
   );

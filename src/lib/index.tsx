@@ -1,12 +1,24 @@
+import { Icons } from "./components/ui/icons";
 import { Chat } from "./screens/chat";
 
-const XCopilot = () => {
+const XCopilot = ({
+  chatBotId,
+  chatBotkey,
+  name = "XCopilot",
+  logo = <Icons.logoDark className="w-5 h-5" />,
+}: {
+  chatBotId: string;
+  chatBotkey: string;
+  name: string;
+  logo?: React.ReactNode;
+}) => {
   return (
     <div>
       <Chat
-        chatBotId="65b8ba210fd1c9693240509f"
-        chatBotkey="4S5Sm7bCV3KbPMejmuKUQxQiUDaBdFEC6K+aQl4eOgw="
-        name="hari"
+        chatBotId={chatBotId}
+        chatBotkey={chatBotkey}
+        name={name}
+        logo={logo}
       />
     </div>
   );
