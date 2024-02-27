@@ -20,7 +20,10 @@ function initXCopilot({
   name: string;
   logo?: React.ReactNode;
 }) {
-  ReactDOM.createRoot(document.getElementById("root")!).render(
+  const xcopilotRoot = document.createElement('div');
+  xcopilotRoot.id = "xcopilot-root"
+  document.body.appendChild(xcopilotRoot);
+  ReactDOM.createRoot(document.getElementById('xcopilot-root')!).render(
     <React.StrictMode>
       <XCopilot
         chatBotId={chatBotId}
