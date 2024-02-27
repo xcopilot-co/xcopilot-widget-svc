@@ -16,11 +16,13 @@ export function Chat({
   chatBotkey,
   name = "XCopilot",
   logo = <Icons.logoDark className="w-5 h-5" />,
+  token,
 }: {
   chatBotId: string;
   chatBotkey: string;
   name: string;
   logo?: React.ReactNode;
+  token?: string;
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -54,8 +56,7 @@ export function Chat({
       {
         prompt: message,
         headers: {
-          Authorization:
-            "Bearer BQBOJxQCtcXqG4RtZtnBvYQNTPlgi-VqONGo_dqXLG3Q2p5Pntyukdp8nV_t-fzl5uOJ71dShYJB22taA1Ec8T7S2K5Ehn8xsBd5XmYo_8O95HIiIUsrLOeekH9p-NLIFcT8w6m_Jq2ejogGd1WwSr7uoaHJKydgggmy6sM9lmxJmsA4BgmjOC5rcCNvYKatBDF3REbXwWVSwTDZGa2RRVf-FCXxkw2inZNd6QKfB4ta7RcVbN3vXG1zUgfwjM0mTuVQD2kWmP17lu3DKDJMR9rFaD3ygudeZR5VfQVM_P1RdFgOwxnOPN0ovro-MGz1NWK0IIb7ZVQWj7H7q6GZ",
+          Authorization: `Bearer ${token}`,
         },
       },
       {
