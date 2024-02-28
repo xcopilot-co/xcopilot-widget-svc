@@ -16,13 +16,13 @@ export function Chat({
   chatBotkey,
   name = "XCopilot",
   logo = <Icons.logoDark className="w-5 h-5" />,
-  token,
+  headers,
 }: {
   chatBotId: string;
   chatBotkey: string;
   name: string;
   logo?: React.ReactNode;
-  token?: string;
+  headers?: Record<string, any>;
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -55,9 +55,7 @@ export function Chat({
       `https://chat.xcopilot.co/chatbot/${chatbotId}`,
       {
         prompt: message,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: headers,
       },
       {
         headers: {

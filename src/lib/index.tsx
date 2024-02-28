@@ -6,14 +6,14 @@ const XCopilot = ({
   chatBotkey,
   name = "XCopilot",
   logo = <Icons.logoDark className="w-5 h-5" />,
-  token,
+  headers,
 }: {
   chatBotId: string;
   chatBotkey: string;
   name: string;
   logo?: React.ReactNode;
   anchorId?: string;
-  token?: string;
+  headers?: Record<string, any>;
 }) => {
   return (
     <div>
@@ -22,7 +22,7 @@ const XCopilot = ({
         chatBotkey={chatBotkey}
         name={name}
         logo={logo}
-        token={token}
+        headers={headers}
       />
     </div>
   );
