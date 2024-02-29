@@ -33,14 +33,11 @@ export function Chat({
   const inputLength = input.trim().length;
 
   async function getChat(chatbotId: string, chatBotKey: string) {
-    const res = await axios.get(
-      `https://chat.xcopilot.co/chatbot/${chatbotId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${chatBotKey}`,
-        },
-      }
-    );
+    const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}`, {
+      headers: {
+        Authorization: `Bearer ${chatBotKey}`,
+      },
+    });
     setMessages(res?.data);
   }
 
@@ -51,8 +48,9 @@ export function Chat({
   ) {
     setLoading(true);
     console.log(import.meta.env.XCOPILOT_CHAT_BASE_URL);
+    console.log("headers", headers);
     const res = await axios.post(
-      `https://chat.xcopilot.co/chatbot/${chatbotId}`,
+      `http://localhost:5000/chatbot/${chatbotId}`,
       {
         prompt: message,
         headers: headers,
