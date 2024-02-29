@@ -17,6 +17,7 @@ function initXCopilot({
   logo,
   anchorId,
   headers,
+  subHeader
 }: {
   chatBotId: string;
   chatBotkey: string;
@@ -24,6 +25,7 @@ function initXCopilot({
   logo?: React.ReactNode;
   anchorId?: string;
   headers?: Record<string, any>;
+  subHeader: string
 }) {
   const xcopilotRoot = createOrGetRoot(anchorId);
   ReactDOM.createRoot(xcopilotRoot!).render(
@@ -34,6 +36,7 @@ function initXCopilot({
         name={name}
         logo={logo}
         headers={headers}
+        subHeader= {subHeader}
       />
       <style>{css}</style>
     </React.StrictMode>
