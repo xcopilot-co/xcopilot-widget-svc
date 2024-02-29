@@ -7,6 +7,7 @@ const XCopilot = ({
   name = "XCopilot",
   logo = <Icons.logoDark className="w-5 h-5" />,
   headers,
+  subHeader
 }: {
   chatBotId: string;
   chatBotkey: string;
@@ -14,6 +15,7 @@ const XCopilot = ({
   logo?: React.ReactNode;
   anchorId?: string;
   headers?: Record<string, any>;
+  subHeader: string
 }) => {
   return (
     <div>
@@ -23,6 +25,7 @@ const XCopilot = ({
         name={name}
         logo={logo}
         headers={headers}
+        subHeader={subHeader}
       />
     </div>
   );

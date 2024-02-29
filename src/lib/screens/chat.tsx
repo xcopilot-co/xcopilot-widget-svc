@@ -17,11 +17,13 @@ export function Chat({
   name = "XCopilot",
   logo = <Icons.logoDark className="w-5 h-5" />,
   headers,
+  subHeader
 }: {
   chatBotId: string;
   chatBotkey: string;
   name: string;
   logo?: React.ReactNode;
+  subHeader: string;
   headers?: Record<string, any>;
 }) {
   const [open, setOpen] = React.useState(false);
@@ -31,6 +33,18 @@ export function Chat({
   const [loading, setLoading] = React.useState(false);
   const viewport = React.useRef<HTMLDivElement>();
   const inputLength = input.trim().length;
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: any) => {
+      if (e.ctrlKey &&  e.code === 'Space') {
+        setOpen(true);
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, []);
 
   async function getChat(chatbotId: string, chatBotKey: string) {
     const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}`, {
@@ -120,7 +134,7 @@ export function Chat({
     <>
       {showDiv && (
         <Card className={`frame`} style={open ? mountedStyle : unmountedStyle}>
-          <ChatHeader name={name} logo={logo} />
+          <ChatHeader name={name} logo={logo} subHeader= {subHeader}/>
           {/* <ScrollArea className="h-full">
             <div
               className="flex flex-col justify-end h-full m-2 space-y-4"
