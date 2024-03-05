@@ -17,7 +17,7 @@ export function Chat({
   name = "XCopilot",
   logo = <Icons.logoDark className="w-5 h-5" />,
   headers,
-  subHeader
+  subHeader,
 }: {
   chatBotId: string;
   chatBotkey: string;
@@ -32,18 +32,20 @@ export function Chat({
   const [input, setInput] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const viewport = React.useRef<HTMLDivElement>();
+  const frameContent = React.useRef<HTMLDivElement>(null);
   const inputLength = input.trim().length;
 
   React.useEffect(() => {
     const handleKeyDown = (e: any) => {
-      if (e.ctrlKey &&  e.code === 'Space') {
+      if (e.ctrlKey && e.code === "Space") {
         setOpen(true);
       }
-    }
-    window.addEventListener('keydown', handleKeyDown);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    }
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   async function getChat(chatbotId: string, chatBotKey: string) {
@@ -106,6 +108,7 @@ export function Chat({
       } else if (!isMounted && showDiv) {
         timeoutId = setTimeout(() => setShowDiv(false), delayTime); //delay our unmount
       }
+
       return () => clearTimeout(timeoutId); // cleanup mechanism for effects , the use of setTimeout generate a sideEffect
     }, [isMounted, delayTime, showDiv]);
     return showDiv;
@@ -117,8 +120,8 @@ export function Chat({
 
   React.useEffect(() => {
     console.log("chatBotId", viewport.current);
-    if (viewport.current) {
-      viewport.current.scrollTop = viewport.current.scrollHeight;
+    if (frameContent.current) {
+      frameContent.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages]);
 
@@ -132,11 +135,31 @@ export function Chat({
 
   const showDiv = useDelayUnmount(open, 200);
 
+  React.useEffect(() => {
+    const scrollToTheBottom = () => {
+      console.log("scrollToTheBottom");
+      const scrollEl = frameContent.current;
+      scrollEl?.scrollIntoView({
+        // top: scrollEl?.scrollHeight,
+        behavior: "smooth",
+        block: "end",
+      });
+    };
+    // scrollToTheBottom();
+    setTimeout(() => {
+      scrollToTheBottom();
+    }, 100);
+  }, [open, messages, showDiv]);
+
+  const handleChatOpen = () => {
+    setOpen(!open);
+  };
+
   return (
     <>
       {showDiv && (
         <Card className={`frame`} style={open ? mountedStyle : unmountedStyle}>
-          <ChatHeader name={name} logo={logo} subHeader= {subHeader}/>
+          <ChatHeader name={name} logo={logo} subHeader={subHeader} />
           {/* <ScrollArea className="h-full">
             <div
               className="flex flex-col justify-end h-full m-2 space-y-4"
@@ -158,7 +181,7 @@ export function Chat({
             </div>
           </ScrollArea> */}
           <ScrollArea className="h-full">
-            <div className="frame_content">
+            <div className="frame_content" ref={frameContent}>
               {messages?.map((message: any, index: any) => (
                 <ChatBubble key={index} message={message} />
               ))}
@@ -205,7 +228,7 @@ export function Chat({
         </Card>
       )}
       {/* <div className="flex-row "> */}
-      <Button onClick={() => setOpen(!open)} className={`trigger_button`}>
+      <Button onClick={handleChatOpen} className={`trigger_button`}>
         <Icons.logo className="w-10 h-10" />
         <span className="sr-only">New chat</span>
       </Button>
