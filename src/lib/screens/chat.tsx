@@ -4,12 +4,15 @@ import * as React from "react";
 import { Button } from "@/lib/components/ui/button";
 import { Card } from "@/lib/components/ui/card";
 
-import { Input } from "@/lib/components/ui/input";
 import { ScrollArea } from "@/lib/components/ui/scroll-area";
 import axios from "axios";
 import { Icons } from "@/lib/components/ui/icons";
 import ChatBubble from "../components/chat-bubble";
 import ChatHeader from "../components/chat-header";
+import NotificationBubble from "../components/notification-bubble";
+// import { Textarea } from "../components/ui/textarea";
+import { ChatState } from "../contexts/chat-state-context";
+import { Input } from "../components/ui/input";
 
 export function Chat({
   chatBotId,
@@ -26,7 +29,7 @@ export function Chat({
   subHeader: string;
   headers?: Record<string, any>;
 }) {
-  const [open, setOpen] = React.useState(false);
+  const { open, setOpen } = React.useContext(ChatState);
 
   const [messages, setMessages] = React.useState<any>([]);
   const [input, setInput] = React.useState("");
@@ -126,7 +129,7 @@ export function Chat({
   }, [messages]);
 
   const mountedStyle = {
-    animation: "chat_popup_in_animation 200ms cubic-bezier(0, 1.2, 1, 1)",
+    animation: "chat_popup_in_animation 350ms cubic-bezier(0, 1.2, 1, 1)",
   };
   const unmountedStyle = {
     animation: "chat_popup_out_animation 200ms cubic-bezier(0, 1.2, 1, 1)",
@@ -196,7 +199,7 @@ export function Chat({
               )}
             </div>
           </ScrollArea>
-          <div className="flex items-center p-0 m-0">
+          <div className="flex items-center p-0 m-0 ">
             <form
               onSubmit={(event) => {
                 event.preventDefault();
@@ -228,6 +231,15 @@ export function Chat({
         </Card>
       )}
       {/* <div className="flex-row "> */}
+      <div className="flex flex-col gap-2">
+        <NotificationBubble
+          content="Hello how can I help you Today?! You can 
+        ask me anything about your business or how to use XCopilot. 
+        "
+        />
+        {/* <NotificationBubble content="Click here or press " /> */}
+      </div>
+
       <Button onClick={handleChatOpen} className={`trigger_button`}>
         <Icons.logo className="w-10 h-10" />
         <span className="sr-only">New chat</span>

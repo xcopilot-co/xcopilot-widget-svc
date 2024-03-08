@@ -94,8 +94,8 @@
   height: min(704px, 100% - 104px);
   min-height: 80px;
   width: 400px;
-  max-height: 704px;
   width: min(400px, 100% - 40px);
+  max-height: 704px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;
   border-radius: 16px;
   display: flex;
@@ -130,7 +130,7 @@
 
 .chat_popup_in {
   animation-name: chat_popup_in_animation;
-  animation-duration: 200ms;
+  animation-duration: 1000ms;
   animation-timing-function: cubic-bezier(0, 1.2, 1, 1);
 }
 
@@ -181,6 +181,14 @@
   height: 55px;
 
   border-radius: 50%;
+}
+
+.notification__bubble {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 300px;
+  width: min(300px, 100% - 40px);
 }
 
 .typingIndicatorContainer {
