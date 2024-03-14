@@ -4,10 +4,10 @@ import { Icons } from './ui/icons';
 
 const ChatBubble = ({ key, message }: any) => {
   return (
-    <div className='flex flex-row gap-3 items-end'>
+    <div className='flex flex-row gap-3 items-end chatbubble_animation'>
       {message.type !== 'human' && (
-        <div className='mt-2'>
-          <Icons.logoLoading className='w-7 h-7' />
+        <div className='mb-1'>
+          <Icons.logoLoading className='w-6 h-6' />
         </div>
       )}
       <div
