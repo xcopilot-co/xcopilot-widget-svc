@@ -1,9 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import css from "./index.scss?inline";
-import XCopilot from "./lib";
-import { createOrGetRoot } from "./lib/utils";
-import { ChatStateProvider } from "./lib/contexts/chat-state-context";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import css from './index.scss?inline';
+import XCopilot from './lib';
+import { createOrGetRoot } from './lib/utils';
+import { ChatStateProvider } from './lib/contexts/chat-state-context';
+import { SocketProvider } from './lib/contexts/socket-context';
 
 declare global {
   interface Window {
@@ -14,7 +15,7 @@ declare global {
 function initXCopilot({
   chatBotId,
   chatBotkey,
-  name = "XCopilot",
+  name = 'XCopilot',
   logo,
   anchorId,
   headers,
@@ -32,15 +33,17 @@ function initXCopilot({
   ReactDOM.createRoot(xcopilotRoot!).render(
     <React.StrictMode>
       <ChatStateProvider>
-        <XCopilot
-          chatBotId={chatBotId}
-          chatBotkey={chatBotkey}
-          name={name}
-          logo={logo}
-          headers={headers}
-          subHeader={subHeader}
-        />
-        <style>{css}</style>
+        <SocketProvider>
+          <XCopilot
+            chatBotId={chatBotId}
+            chatBotkey={chatBotkey}
+            name={name}
+            logo={logo}
+            headers={headers}
+            subHeader={subHeader}
+          />
+          <style>{css}</style>
+        </SocketProvider>
       </ChatStateProvider>
     </React.StrictMode>
   );
