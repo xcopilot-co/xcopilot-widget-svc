@@ -1,25 +1,21 @@
-import * as React from 'react';
+import * as React from "react";
 // import { Check, Plus, Send } from "lucide-react";
 
-import { Button } from '@/lib/components/ui/button';
-import { Card } from '@/lib/components/ui/card';
-
-import { ScrollArea } from '@/lib/components/ui/scroll-area';
-import axios from 'axios';
-import { Icons } from '@/lib/components/ui/icons';
-import ChatBubble from '../components/chat-bubble';
-import ChatHeader from '../components/chat-header';
-import NotificationBubble from '../components/notification-bubble';
+import { ScrollArea } from "@/lib/components/ui/scroll-area";
+import axios from "axios";
+import { Icons } from "@/lib/components/ui/icons";
+import ChatBubble from "../components/chat-bubble";
+import ChatHeader from "../components/chat-header";
 // import { Textarea } from "../components/ui/textarea";
-import { ChatState } from '../contexts/chat-state-context';
-import { Input } from '../components/ui/input';
-import { SocketContext } from '../contexts/socket-context';
+import { ChatState } from "../contexts/chat-state-context";
+import { Input } from "../components/ui/input";
+import { SocketContext } from "../contexts/socket-context";
 
-export function Chat({
+export default function Chat({
   chatBotId,
   chatBotkey,
-  name = 'XCopilot',
-  logo = <Icons.logoDark className='w-5 h-5' />,
+  name = "XCopilot",
+  logo = <Icons.logoDark className="w-5 h-5" />,
   headers,
   subHeader,
 }: {
@@ -33,26 +29,26 @@ export function Chat({
   const { open, setOpen } = React.useContext(ChatState);
 
   const [messages, setMessages] = React.useState<any>([]);
-  const [input, setInput] = React.useState('');
+  const [input, setInput] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const viewport = React.useRef<HTMLDivElement>();
   const frameContent = React.useRef<HTMLDivElement>(null);
   const inputLength = input.trim().length;
-  const [loadingText, setLoadingText] = React.useState('Thinking');
+  const [loadingText, setLoadingText] = React.useState("Thinking");
 
   const { state, socket } = React.useContext(SocketContext);
-  console.log('socket', state);
+  console.log("socket", state);
 
   React.useEffect(() => {
     const handleKeyDown = (e: any) => {
-      if (e.ctrlKey && e.code === 'Space') {
+      if (e.ctrlKey && e.code === "Space") {
         setOpen(true);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
@@ -70,9 +66,9 @@ export function Chat({
     chatBotKey: string,
     message: string
   ) {
-    setLoadingText('Thinking');
+    setLoadingText("Thinking");
     setLoading(true);
-    socket?.emit('chat', {
+    socket?.emit("chat", {
       chatbot_id: chatbotId,
       chatbot_key: chatBotKey,
       prompt: message,
@@ -110,12 +106,12 @@ export function Chat({
     // setLoading(false);
   }
 
-  socket?.on('chat', (data: any) => {
-    console.log('data', data);
+  socket?.on("chat", (data: any) => {
+    console.log("data", data);
     setMessages([
       ...messages,
       {
-        type: 'ai',
+        type: "ai",
         data: {
           content: data?.data?.output,
         },
@@ -124,13 +120,13 @@ export function Chat({
     setLoading(false);
   });
 
-  socket?.on('loading_text', (data: any) => {
-    console.log('loading_text', data);
-    setLoadingText(data?.data || 'Thinking');
+  socket?.on("loading_text", (data: any) => {
+    console.log("loading_text", data);
+    setLoadingText(data?.data || "Thinking");
   });
 
-  socket?.on('error', (data: any) => {
-    console.log('error', data);
+  socket?.on("error", (data: any) => {
+    console.log("error", data);
   });
 
   function useDelayUnmount(isMounted: any, delayTime: any) {
@@ -153,33 +149,25 @@ export function Chat({
   }, []);
 
   React.useEffect(() => {
-    console.log('chatBotId', viewport.current);
+    console.log("chatBotId", viewport.current);
     if (frameContent.current) {
       frameContent.current.scrollIntoView({
         // behavior: 'instant',
-        block: 'end',
+        block: "end",
       });
     }
   }, [messages]);
-
-  const mountedStyle = {
-    animation: 'chat_popup_in_animation 350ms cubic-bezier(0, 1.2, 1, 1)',
-  };
-  const unmountedStyle = {
-    animation: 'chat_popup_out_animation 200ms cubic-bezier(0, 1.2, 1, 1)',
-    animationFillMode: 'forwards',
-  };
 
   const showDiv = useDelayUnmount(open, 200);
 
   React.useEffect(() => {
     const scrollToTheBottom = () => {
-      console.log('scrollToTheBottom');
+      console.log("scrollToTheBottom");
       const scrollEl = frameContent.current;
       scrollEl?.scrollIntoView({
         // top: scrollEl?.scrollHeight,
-        behavior: 'smooth',
-        block: 'end',
+        behavior: "smooth",
+        block: "end",
       });
     };
     // scrollToTheBottom();
@@ -188,14 +176,10 @@ export function Chat({
     }, 100);
   }, [open, messages, showDiv]);
 
-  const handleChatOpen = () => {
-    setOpen(!open);
-  };
-
   return (
     <>
       {showDiv && (
-        <Card className={`frame`} style={open ? mountedStyle : unmountedStyle}>
+        <>
           <ChatHeader name={name} logo={logo} subHeader={subHeader} />
           {/* <ScrollArea className="h-full">
             <div
@@ -217,26 +201,26 @@ export function Chat({
               ))}
             </div>
           </ScrollArea> */}
-          <ScrollArea className='h-full'>
-            <div className='frame_content' ref={frameContent}>
+          <ScrollArea className="h-full">
+            <div className="frame_content" ref={frameContent}>
               {messages?.map((message: any, index: any) => (
                 <ChatBubble key={index} message={message} />
               ))}
               {loading && (
-                <div className='flex flex-row gap-3 text-sm items-center mt-2'>
-                  <div className='typingIndicatorContainer'>
-                    <div className='typingIndicatorBubble'>
-                      <div className='typingIndicatorBubbleDot'></div>
-                      <div className='typingIndicatorBubbleDot'></div>
-                      <div className='typingIndicatorBubbleDot'></div>
+                <div className="flex flex-row items-center gap-3 mt-2 text-sm">
+                  <div className="typingIndicatorContainer">
+                    <div className="typingIndicatorBubble">
+                      <div className="typingIndicatorBubbleDot"></div>
+                      <div className="typingIndicatorBubbleDot"></div>
+                      <div className="typingIndicatorBubbleDot"></div>
                     </div>
                   </div>
-                  <div className=''>{loadingText}...</div>
+                  <div className="">{loadingText}...</div>
                 </div>
               )}
             </div>
           </ScrollArea>
-          <div className='flex items-center p-0 m-0 '>
+          <div className="flex items-center p-0 m-0 ">
             <form
               onSubmit={(event) => {
                 event.preventDefault();
@@ -244,44 +228,29 @@ export function Chat({
                 setMessages([
                   ...messages,
                   {
-                    type: 'human',
+                    type: "human",
                     data: {
                       content: input,
                     },
                   },
                 ]);
-                setInput('');
+                setInput("");
                 sendMessage(chatBotId, chatBotkey, input);
               }}
-              className='flex items-center w-full h-full p-0 m-0 border-t border-gray-300 shadow-t-lg'
+              className="flex items-center w-full h-full p-0 m-0 border-t border-gray-300 shadow-t-lg"
             >
               <Input
-                id='message'
-                placeholder='Type your message...'
-                className='chat_text_field focus-visible:ring-0'
-                autoComplete='off'
+                id="message"
+                placeholder="Type your message..."
+                className="chat_text_field focus-visible:ring-0"
+                autoComplete="off"
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
               />
             </form>
           </div>
-        </Card>
+        </>
       )}
-      {/* <div className="flex-row "> */}
-      <div className='flex flex-col gap-2'>
-        <NotificationBubble
-          content='Hello how can I help you Today?! You can 
-        ask me anything about your business or how to use XCopilot. 
-        '
-        />
-        {/* <NotificationBubble content="Click here or press " /> */}
-      </div>
-
-      <Button onClick={handleChatOpen} className={`trigger_button`}>
-        <Icons.logo className='w-10 h-10' />
-        <span className='sr-only'>New chat</span>
-      </Button>
-      {/* </div> */}
     </>
   );
 }

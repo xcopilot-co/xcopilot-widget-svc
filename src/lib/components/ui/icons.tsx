@@ -27,6 +27,11 @@ import {
   Eye,
   EyeOff,
   type XIcon as LucideIcon,
+  Headset,
+  MessageCircle,
+  SendHorizonal,
+  Bell,
+  LayoutGrid,
 } from "lucide-react";
 
 export type Icon = typeof LucideIcon;
@@ -103,6 +108,11 @@ export const Icons = {
   search: Search,
   eye: Eye,
   eyeOff: EyeOff,
+  headset: Headset,
+  messageCircle: MessageCircle,
+  send: SendHorizonal,
+  bell: Bell,
+  layoutGrid: LayoutGrid,
 
   gitHub: ({ ...props }: LucideProps) => (
     <svg
