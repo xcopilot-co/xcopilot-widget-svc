@@ -26,8 +26,6 @@ export default function Chat({
   subHeader: string;
   headers?: Record<string, any>;
 }) {
-  const { open, setOpen } = React.useContext(ChatState);
-
   const [messages, setMessages] = React.useState<any>([]);
   const [input, setInput] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -36,6 +34,7 @@ export default function Chat({
   const inputLength = input.trim().length;
   const [loadingText, setLoadingText] = React.useState("Thinking");
 
+  const { open, setOpen, user } = React.useContext(ChatState);
   const { state, socket } = React.useContext(SocketContext);
   console.log("socket", state);
 
@@ -53,7 +52,7 @@ export default function Chat({
   }, []);
 
   async function getChat(chatbotId: string, chatBotKey: string) {
-    const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}`, {
+    const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}?userId=${user?.userId}`, {
       headers: {
         Authorization: `Bearer ${chatBotKey}`,
       },
@@ -73,6 +72,7 @@ export default function Chat({
       chatbot_key: chatBotKey,
       prompt: message,
       headers: headers,
+      user: user,
     });
     // const res = await axios.post(
     //   `http://localhost:5000/chatbot/${chatbotId}`,
