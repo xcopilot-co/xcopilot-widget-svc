@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  ArrowDown,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -26,6 +27,11 @@ import {
   Eye,
   EyeOff,
   type XIcon as LucideIcon,
+  Headset,
+  MessageCircle,
+  SendHorizonal,
+  Bell,
+  LayoutGrid,
 } from "lucide-react";
 
 export type Icon = typeof LucideIcon;
@@ -64,7 +70,7 @@ export const Icons = {
       {...props}
     >
       <path
-        fill-rule="evenodd"
+        fill-rule="evenodd "
         clip-rule="evenodd"
         d="M27.0003 53.0003C28.1049 53.0003 29.0003 52.1049 29.0003 51.0003C29.0003 49.8958 28.1049 49.0003 27.0003 49.0003C25.8958 49.0003 25.0003 49.8958 25.0003 51.0003C25.0003 52.1049 25.8958 53.0003 27.0003 53.0003ZM27.0003 57.0003C23.6866 57.0003 21.0003 54.314 21.0003 51.0003C21.0003 47.6866 23.6866 45.0003 27.0003 45.0003C30.314 45.0003 33.0003 47.6866 33.0003 51.0003C33.0003 54.314 30.314 57.0003 27.0003 57.0003ZM57.0003 53.0003C58.1049 53.0003 59.0003 52.1049 59.0003 51.0003C59.0003 49.8958 58.1049 49.0003 57.0003 49.0003C55.8958 49.0003 55.0003 49.8958 55.0003 51.0003C55.0003 52.1049 55.8958 53.0003 57.0003 53.0003ZM57.0003 57.0003C53.6866 57.0003 51.0003 54.314 51.0003 51.0003C51.0003 47.6866 53.6866 45.0003 57.0003 45.0003C60.314 45.0003 63.0003 47.6866 63.0003 51.0003C63.0003 54.314 60.314 57.0003 57.0003 57.0003Z"
         fill="#00000"
@@ -93,6 +99,7 @@ export const Icons = {
   warning: AlertTriangle,
   user: User,
   arrowRight: ArrowRight,
+  ArrowDown: ArrowDown,
   help: HelpCircle,
   pizza: Pizza,
   sun: SunMedium,
@@ -101,6 +108,11 @@ export const Icons = {
   search: Search,
   eye: Eye,
   eyeOff: EyeOff,
+  headset: Headset,
+  messageCircle: MessageCircle,
+  send: SendHorizonal,
+  bell: Bell,
+  layoutGrid: LayoutGrid,
 
   gitHub: ({ ...props }: LucideProps) => (
     <svg

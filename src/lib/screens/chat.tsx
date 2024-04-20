@@ -1,23 +1,23 @@
 import * as React from "react";
 // import { Check, Plus, Send } from "lucide-react";
 
-import { Button } from "@/lib/components/ui/button";
-import { Card } from "@/lib/components/ui/card";
-
-import { Input } from "@/lib/components/ui/input";
 import { ScrollArea } from "@/lib/components/ui/scroll-area";
 import axios from "axios";
 import { Icons } from "@/lib/components/ui/icons";
 import ChatBubble from "../components/chat-bubble";
 import ChatHeader from "../components/chat-header";
+// import { Textarea } from "../components/ui/textarea";
+import { ChatState } from "../contexts/chat-state-context";
+import { Input } from "../components/ui/input";
+import { SocketContext } from "../contexts/socket-context";
 
-export function Chat({
+export default function Chat({
   chatBotId,
   chatBotkey,
   name = "XCopilot",
   logo = <Icons.logoDark className="w-5 h-5" />,
   headers,
-  subHeader
+  subHeader,
 }: {
   chatBotId: string;
   chatBotkey: string;
@@ -26,28 +26,33 @@ export function Chat({
   subHeader: string;
   headers?: Record<string, any>;
 }) {
-  const [open, setOpen] = React.useState(false);
-
   const [messages, setMessages] = React.useState<any>([]);
   const [input, setInput] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const viewport = React.useRef<HTMLDivElement>();
+  const frameContent = React.useRef<HTMLDivElement>(null);
   const inputLength = input.trim().length;
+  const [loadingText, setLoadingText] = React.useState("Thinking");
+
+  const { open, setOpen, user } = React.useContext(ChatState);
+  const { state, socket } = React.useContext(SocketContext);
+  console.log("socket", state);
 
   React.useEffect(() => {
     const handleKeyDown = (e: any) => {
-      if (e.ctrlKey &&  e.code === 'Space') {
+      if (e.ctrlKey && e.code === "Space") {
         setOpen(true);
       }
-    }
-    window.addEventListener('keydown', handleKeyDown);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    }
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   async function getChat(chatbotId: string, chatBotKey: string) {
-    const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}`, {
+    const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}?userId=${user?.userId}`, {
       headers: {
         Authorization: `Bearer ${chatBotKey}`,
       },
@@ -60,40 +65,69 @@ export function Chat({
     chatBotKey: string,
     message: string
   ) {
+    setLoadingText("Thinking");
     setLoading(true);
-    console.log(import.meta.env.XCOPILOT_CHAT_BASE_URL);
-    console.log("headers", headers);
-    const res = await axios.post(
-      `http://localhost:5000/chatbot/${chatbotId}`,
-      {
-        prompt: message,
-        headers: headers,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${chatBotKey}`,
-        },
-      }
-    );
-    console.log("res", res?.data);
-    console.log(messages);
+    socket?.emit("chat", {
+      chatbot_id: chatbotId,
+      chatbot_key: chatBotKey,
+      prompt: message,
+      headers: headers,
+      user: user,
+    });
+    // const res = await axios.post(
+    //   `http://localhost:5000/chatbot/${chatbotId}`,
+    //   {
+    //     prompt: message,
+    //     headers: headers,
+    //   },
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${chatBotKey}`,
+    //     },
+    //   }
+    // );
+    // console.log('res', res?.data);
+    // console.log(messages);
+    // setMessages([
+    //   ...res?.data?.history,
+    //   {
+    //     type: 'human',
+    //     data: {
+    //       content: res?.data?.input,
+    //     },
+    //   },
+    //   {
+    //     type: 'ai',
+    //     data: {
+    //       content: res?.data?.output,
+    //     },
+    //   },
+    // ]);
+    // setLoading(false);
+  }
+
+  socket?.on("chat", (data: any) => {
+    console.log("data", data);
     setMessages([
-      ...res?.data?.history,
-      {
-        type: "human",
-        data: {
-          content: res?.data?.input,
-        },
-      },
+      ...messages,
       {
         type: "ai",
         data: {
-          content: res?.data?.output,
+          content: data?.data?.output,
         },
       },
     ]);
     setLoading(false);
-  }
+  });
+
+  socket?.on("loading_text", (data: any) => {
+    console.log("loading_text", data);
+    setLoadingText(data?.data || "Thinking");
+  });
+
+  socket?.on("error", (data: any) => {
+    console.log("error", data);
+  });
 
   function useDelayUnmount(isMounted: any, delayTime: any) {
     const [showDiv, setShowDiv] = React.useState(false);
@@ -104,6 +138,7 @@ export function Chat({
       } else if (!isMounted && showDiv) {
         timeoutId = setTimeout(() => setShowDiv(false), delayTime); //delay our unmount
       }
+
       return () => clearTimeout(timeoutId); // cleanup mechanism for effects , the use of setTimeout generate a sideEffect
     }, [isMounted, delayTime, showDiv]);
     return showDiv;
@@ -115,26 +150,37 @@ export function Chat({
 
   React.useEffect(() => {
     console.log("chatBotId", viewport.current);
-    if (viewport.current) {
-      viewport.current.scrollTop = viewport.current.scrollHeight;
+    if (frameContent.current) {
+      frameContent.current.scrollIntoView({
+        // behavior: 'instant',
+        block: "end",
+      });
     }
   }, [messages]);
 
-  const mountedStyle = {
-    animation: "chat_popup_in_animation 200ms cubic-bezier(0, 1.2, 1, 1)",
-  };
-  const unmountedStyle = {
-    animation: "chat_popup_out_animation 200ms cubic-bezier(0, 1.2, 1, 1)",
-    animationFillMode: "forwards",
-  };
-
   const showDiv = useDelayUnmount(open, 200);
+
+  React.useEffect(() => {
+    const scrollToTheBottom = () => {
+      console.log("scrollToTheBottom");
+      const scrollEl = frameContent.current;
+      scrollEl?.scrollIntoView({
+        // top: scrollEl?.scrollHeight,
+        behavior: "smooth",
+        block: "end",
+      });
+    };
+    // scrollToTheBottom();
+    setTimeout(() => {
+      scrollToTheBottom();
+    }, 100);
+  }, [open, messages, showDiv]);
 
   return (
     <>
       {showDiv && (
-        <Card className={`frame`} style={open ? mountedStyle : unmountedStyle}>
-          <ChatHeader name={name} logo={logo} subHeader= {subHeader}/>
+        <>
+          <ChatHeader name={name} logo={logo} subHeader={subHeader} />
           {/* <ScrollArea className="h-full">
             <div
               className="flex flex-col justify-end h-full m-2 space-y-4"
@@ -156,22 +202,25 @@ export function Chat({
             </div>
           </ScrollArea> */}
           <ScrollArea className="h-full">
-            <div className="frame_content">
+            <div className="frame_content" ref={frameContent}>
               {messages?.map((message: any, index: any) => (
                 <ChatBubble key={index} message={message} />
               ))}
               {loading && (
-                <div className="typingIndicatorContainer">
-                  <div className="typingIndicatorBubble">
-                    <div className="typingIndicatorBubbleDot"></div>
-                    <div className="typingIndicatorBubbleDot"></div>
-                    <div className="typingIndicatorBubbleDot"></div>
+                <div className="flex flex-row items-center gap-3 mt-2 text-sm">
+                  <div className="typingIndicatorContainer">
+                    <div className="typingIndicatorBubble">
+                      <div className="typingIndicatorBubbleDot"></div>
+                      <div className="typingIndicatorBubbleDot"></div>
+                      <div className="typingIndicatorBubbleDot"></div>
+                    </div>
                   </div>
+                  <div className="">{loadingText}...</div>
                 </div>
               )}
             </div>
           </ScrollArea>
-          <div className="flex items-center p-0 m-0">
+          <div className="flex items-center p-0 m-0 ">
             <form
               onSubmit={(event) => {
                 event.preventDefault();
@@ -200,14 +249,8 @@ export function Chat({
               />
             </form>
           </div>
-        </Card>
+        </>
       )}
-      {/* <div className="flex-row "> */}
-      <Button onClick={() => setOpen(!open)} className={`trigger_button`}>
-        <Icons.logo className="w-10 h-10" />
-        <span className="sr-only">New chat</span>
-      </Button>
-      {/* </div> */}
     </>
   );
 }
