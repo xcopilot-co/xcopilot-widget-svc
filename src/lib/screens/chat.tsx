@@ -52,11 +52,14 @@ export default function Chat({
   }, []);
 
   async function getChat(chatbotId: string, chatBotKey: string) {
-    const res = await axios.get(`http://localhost:5000/chatbot/${chatbotId}?userId=${user?.userId}`, {
-      headers: {
-        Authorization: `Bearer ${chatBotKey}`,
-      },
-    });
+    const res = await axios.get(
+      `http://localhost:5000/chatbot/${chatbotId}?userId=${user?.userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${chatBotKey}`,
+        },
+      }
+    );
     setMessages(res?.data);
   }
 
@@ -72,7 +75,7 @@ export default function Chat({
       chatbot_key: chatBotKey,
       prompt: message,
       headers: headers,
-      user: user,
+      userId: user.userId,
     });
     // const res = await axios.post(
     //   `http://localhost:5000/chatbot/${chatbotId}`,

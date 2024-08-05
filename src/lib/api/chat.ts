@@ -3,10 +3,12 @@ import axios from "axios";
 export const initBot = async ({
   chatbotId,
   chatBotKey,
+  organizationId,
   user,
 }: {
   chatbotId: string;
   chatBotKey: string;
+  organizationId: string;
   user: {
     name: string;
     email: string;
@@ -18,6 +20,7 @@ export const initBot = async ({
       `http://localhost:5000/chatbot/${chatbotId}/init`,
       {
         user: user,
+        organizationId: organizationId,
       },
       {
         headers: {

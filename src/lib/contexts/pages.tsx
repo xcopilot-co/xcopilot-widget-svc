@@ -7,6 +7,7 @@ export enum PAGES {
   "CHAT" = "CHAT",
   "CONVERSATIONS" = "CONVERSATIONS",
   "NOTIFICATIONS" = "NOTIFICATIONS",
+  "CONVERSATION_CHAT" = "CONVERSATION_CHAT",
 }
 
 export const pageComponentMap = {

@@ -14,7 +14,10 @@ export interface ChatState {
     name: string;
     email: string;
     userId: string;
+    id: string;
   };
+  activeConversation: string | null;
+  setActiveConversation: (conversationId: string) => void;
 }
 const ChatState = createContext<ChatState>({
   open: false,
@@ -29,7 +32,10 @@ const ChatState = createContext<ChatState>({
     name: "",
     email: "",
     userId: "",
+    id: "",
   },
+  activeConversation: null,
+  setActiveConversation: () => {},
 });
 
 const ChatStateProvider = ({
@@ -41,12 +47,16 @@ const ChatStateProvider = ({
     name: string;
     email: string;
     userId: string;
+    id: string;
   };
 }) => {
   const [open, setOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(true);
   const [activePage, setActivePage] = useState<PAGES>(PAGES.HOME);
   const [loading, setLoading] = useState(false);
+  const [activeConversation, setActiveConversation] = useState<string | null>(
+    null
+  );
 
   return (
     <ChatState.Provider
@@ -60,6 +70,8 @@ const ChatStateProvider = ({
         loading,
         setLoading,
         user,
+        activeConversation,
+        setActiveConversation,
       }}
     >
       {children}
