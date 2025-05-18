@@ -5,7 +5,6 @@ import XCopilot from "./lib";
 import { createOrGetRoot } from "./lib/utils";
 import { ChatStateProvider } from "./lib/contexts/chat-state-context";
 import { SocketProvider } from "./lib/contexts/socket-context";
-import { initBot } from "./lib/api/chat";
 import { SWRConfig } from "swr";
 import axios from "axios";
 
@@ -18,38 +17,30 @@ declare global {
 async function initXCopilot({
   chatBotId,
   chatBotkey,
-  organizationId,
   name = "XCopilot",
   logo,
   anchorId,
   headers,
   subHeader,
-  user,
 }: {
   chatBotId: string;
   chatBotkey: string;
-  organizationId: string;
   name: string;
   logo?: React.ReactNode;
   anchorId?: string;
   headers?: Record<string, any>;
   subHeader: string;
-  user: {
-    name: string;
-    email: string;
-    userId: string;
-  };
 }) {
   const xcopilotRoot = createOrGetRoot(anchorId);
-  const activeUser = await initBot({
-    chatbotId: chatBotId,
-    chatBotKey: chatBotkey,
-    organizationId: organizationId,
-    user: user,
-  });
   ReactDOM.createRoot(xcopilotRoot!).render(
     <React.StrictMode>
-      <ChatStateProvider user={activeUser}>
+      <ChatStateProvider user={{
+        name: "John Doe",
+        email: "john.doe@example.com",
+        userId: "123",
+        id: "123",
+      }}
+      >
         <SocketProvider>
           <SWRConfig
             value={{
